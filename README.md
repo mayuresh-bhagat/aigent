@@ -68,11 +68,6 @@ venv\Scripts\activate
 venv\Scripts\Activate.ps1
 ```
 
-**Note:** If you get an execution policy error in PowerShell, run:
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
 ### Verify Virtual Environment
 
 When activated, your prompt should show `(venv)` at the beginning:
