@@ -1,0 +1,41 @@
+name: PR Code Quality Scan
+
+on:
+  pull_request:
+    branches: [dev]
+
+jobs:
+  code-scan:
+    name: Static Code Analysis & LLM Summary
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout PR code
+      uses: actions/checkout@v3
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+
+
+    - name: Generate Summary Report
+      run: |
+        echo "## Lint Summary" >> $GITHUB_STEP_SUMMARY
+        echo "\nPHPStan, PHPCS, ESLint, Stylelint, SQLFluff results above." >> $GITHUB_STEP_SUMMARY
+
+    # Optional: Gemini API call if you have key (read below)
+
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Run Gemini Check (LLM)
+      env:
+        GEMINI_API_KEY: 'AIzaSyD6OVR_dU_RIv2U-5Wy7dulQEX4M_h7fzE'  # Replace with your actual API key
+      run: |
+        pip install requests
+        python scripts/gemini_check.py
+        cat gemini_report.md >> $GITHUB_STEP_SUMMARY
+
