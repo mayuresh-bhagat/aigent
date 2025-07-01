@@ -81,7 +81,7 @@ include('../include/con.php');
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title" id="pageTitle">Edit Profile</h4>
+                                    <h4 class="card-title" id="pageTitle">Edit Profile - Mayuresh</h4>
 
                                     <form class="forms-sample" action="editProfile_db" method="post"
                                         enctype="multipart/form-data">
@@ -175,7 +175,7 @@ document.getElementById('imageUpload').addEventListener('change', function(e) {
     if (file) {
         var fileName = file.name;
         var ext = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
-        if (ext === 'jpeg' || ext === 'jpg' || ext === 'png') {
+        if (ext === 'jpeg' || ext === '' || ext === 'png') {
             // Valid file extension
             // You can provide feedback to the user if needed
         } else {
