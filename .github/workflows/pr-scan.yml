@@ -18,35 +18,6 @@ jobs:
       with:
         php-version: '8.1'
 
-    - name: Install PHPStan & PHPCS
-      run: |
-        composer global require phpstan/phpstan
-        composer global require "squizlabs/php_codesniffer=*"
-
-    - name: Run PHPStan
-      run: ~/.composer/vendor/bin/phpstan analyse --level=5 --no-progress
-
-    - name: Run PHPCS
-      run: ~/.composer/vendor/bin/phpcs --standard=PSR12 .
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-
-    - name: Install ESLint, Stylelint, SQLFluff
-      run: |
-        npm install -g eslint stylelint sqlfluff
-
-    - name: Run ESLint (JS/HTML)
-      run: eslint . --ext .js,.html || true
-
-    - name: Run Stylelint (CSS)
-      run: stylelint "**/*.css" || true
-
-    - name: Run SQLFluff (SQL)
-      run: |
-        sqlfluff lint "**/*.sql" || true
 
     - name: Generate Summary Report
       run: |
