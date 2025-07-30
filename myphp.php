@@ -1,6 +1,8 @@
 <?php
 // PHP Example: example.php
 
+// Dummy Page
+
 // 1. Critical: SQL Injection Vulnerability (Direct use of GET parameter in query)
 $user_id = $_GET['id']; // NO SANITIZATION
 $conn = new mysqli("localhost", "user", "password", "database");
