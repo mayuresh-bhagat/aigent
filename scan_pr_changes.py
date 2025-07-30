@@ -119,22 +119,20 @@ if __name__ == "__main__":
 
     changed_files_json = os.getenv("CHANGED_FILES")
     if not changed_files_json:
-        print("Environment variable 'CHANGED_FILES' not set or empty.")
+        print("CHANGED_FILES environment variable is missing or empty.")
         exit(0)
 
     try:
-        # changed_files = [f for f in json.loads(changed_files_json) if f]
-        changed_files = [f for f in changed_files_json if f]
-
-    except json.JSONDecodeError:
-        print(f"Error parsing CHANGED_FILES: {changed_files_json}")
+        changed_files = json.loads(changed_files_json)
+    except json.JSONDecodeError as e:
+        print(f"Invalid JSON in CHANGED_FILES: {changed_files_json}")
         exit(1)
 
     if not changed_files:
-        print("No changed files found.")
+        print("No changed files.")
         exit(0)
 
-    has_issues = False
+    # Now loop through actual files
     for file_path in changed_files:
         if not Path(file_path).is_file():
             print(f"Skipping {file_path}: Not found or deleted.")
