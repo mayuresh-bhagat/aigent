@@ -1,0 +1,52 @@
+name: PR Code Analysis
+
+on:
+  pull_request:
+    branches:
+      - dev  # Adjust to your default or development branch
+
+jobs:
+  code_scan:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read         # Needed to checkout the repository
+      pull-requests: write   # Needed to post annotations on PR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for accurate diffs
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-generativeai pydantic
+
+      - name: Get changed files in PR
+        id: changed-files
+        run: |
+          BASE_REF="${{ github.base_ref }}"
+          HEAD_REF="${{ github.head_ref }}"
+
+          echo "Base Ref: $BASE_REF"
+          echo "Head Ref: $HEAD_REF"
+
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AMR "$BASE_REF" "$HEAD_REF" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "Discovered changed files: $CHANGED_FILES"
+
+          echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_ENV"
+        if: github.event_name == 'pull_request' && github.base_ref != '' && github.head_ref != ''
+
+      - name: Run Code Analysis Script
+        if: env.CHANGED_FILES != '[]' && env.CHANGED_FILES != 'null'
+        run: python scan_pr_changes.py
+        env:
+          GOOGLE_GEMINI_API_KEY: ${{ secrets.GOOGLE_GEMINI_API_KEY }}
+          CHANGED_FILES: ${{ env.CHANGED_FILES }}
