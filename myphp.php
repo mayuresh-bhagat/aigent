@@ -30,7 +30,7 @@ eval($code); // Dangerous function, allows arbitrary code execution
 $name = "John Doe" // Missing semicolon
 
 // 5. Best Practice: Direct output without escaping (Potential XSS if used in HTML context)
-$search_query = $_GET['q'];
+$search_query = $_GET['q'
 echo "You searched for: " . $search_query; // No HTML escaping (e.g., htmlspecialchars)
 
 // 6. Performance/Maintainability: Unused variable

@@ -4,6 +4,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional, List
 import google.generativeai as genai
+import re
 
 # --- Pydantic Models ---
 class Issue(BaseModel):
@@ -16,7 +17,7 @@ class Issue(BaseModel):
 
 # --- Gemini API Configuration ---
 def configure_gemini_api():
-    api_key = os.getenv("GOOGLE_GEMINI_API_KEY")
+    api_key = "AIzaSyCyD00vsL6q0xHGfoxoHnbGw0Xq2lW9tmY"
     if not api_key:
         raise ValueError("Environment variable GOOGLE_GEMINI_API_KEY not set. Please add it to your GitHub Secrets.")
     genai.configure(api_key=api_key)
@@ -24,7 +25,7 @@ def configure_gemini_api():
 # --- Code Analysis Function ---
 def analyze_code_content(file_path: str, file_content: str, mime_type: str) -> List[Issue]:
     try:
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-2.0-flash-exp")
 
         lines = file_content.splitlines()
         numbered_content = "\n".join(f"{i:4d}: {line}" for i, line in enumerate(lines, 1))
@@ -67,8 +68,16 @@ Code to analyze:
         text = response.candidates[0].content.parts[0].text.strip()
 
         # Parse and validate JSON
-        issues_data = json.loads(text)
-        return [Issue(**issue) for issue in issues_data]
+        
+        # Extract just the JSON array
+        match = re.search(r'\[\s*\{[\s\S]+?\}\s*\]', text)
+        if match:
+            json_str = match.group(0)
+            issues_data = json.loads(json_str)
+            return [Issue(**issue) for issue in issues_data]
+        else:
+            print("⚠️ Gemini returned response, but no JSON array found.")
+            return []
 
     except Exception as e:
         print(f"Error during analysis of {file_path}: {e}")
@@ -119,19 +128,20 @@ if __name__ == "__main__":
 
     changed_files_json = os.getenv("CHANGED_FILES")
     if not changed_files_json:
-        print("Environment variable 'CHANGED_FILES' not set or empty.")
+        print("CHANGED_FILES environment variable is missing or empty.")
         exit(0)
 
     try:
-        changed_files = [f for f in json.loads(changed_files_json) if f]
-    except json.JSONDecodeError:
-        print(f"Error parsing CHANGED_FILES: {changed_files_json}")
+        changed_files = json.loads(changed_files_json)
+    except json.JSONDecodeError as e:
+        print(f"Invalid JSON in CHANGED_FILES: {changed_files_json}")
         exit(1)
 
     if not changed_files:
-        print("No changed files found.")
+        print("No changed files.")
         exit(0)
 
+    # Now loop through actual files
     has_issues = False
     for file_path in changed_files:
         if not Path(file_path).is_file():
