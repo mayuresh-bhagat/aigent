@@ -4,6 +4,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional, List
 import google.generativeai as genai
+import re
 
 # --- Pydantic Models ---
 class Issue(BaseModel):
@@ -67,8 +68,16 @@ Code to analyze:
         text = response.candidates[0].content.parts[0].text.strip()
 
         # Parse and validate JSON
-        issues_data = json.loads(text)
-        return [Issue(**issue) for issue in issues_data]
+        
+        # Extract just the JSON array
+        match = re.search(r'\[\s*\{[\s\S]+?\}\s*\]', text)
+        if match:
+            json_str = match.group(0)
+            issues_data = json.loads(json_str)
+            return [Issue(**issue) for issue in issues_data]
+        else:
+            print("⚠️ Gemini returned response, but no JSON array found.")
+            return []
 
     except Exception as e:
         print(f"Error during analysis of {file_path}: {e}")
