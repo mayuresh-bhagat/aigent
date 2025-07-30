@@ -16,7 +16,7 @@ class Issue(BaseModel):
 
 # --- Gemini API Configuration ---
 def configure_gemini_api():
-    api_key = "AIzaSyD6OVR_dU_RIv2U-5Wy7dulQEX4M_h7fzE"
+    api_key = "AIzaSyCyD00vsL6q0xHGfoxoHnbGw0Xq2lW9tmY"
     if not api_key:
         raise ValueError("Environment variable GOOGLE_GEMINI_API_KEY not set. Please add it to your GitHub Secrets.")
     genai.configure(api_key=api_key)
