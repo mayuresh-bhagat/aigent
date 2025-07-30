@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Demo Page</title>
+    <style>
+        /* Inline style tag instead of external CSS */
+        body {
+            background-color: lightblue;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to the Demo</h1>
+
+    <p>User input:
+        <script>document.write(new URLSearchParams(window.location.search).get('data'))</script>
+    </p>
+
+    <button onclick="alert('Inline JavaScript is bad practice')">Click Me</button>
+    <center>This text is centered using a deprecated tag.</center>
+
+    <img src="missing.jpg">
+
+    <div id="duplicateId">First div</div>
+    <div id="duplicateId">Second div</div>
+
+    <script>
+        // 6. Medium: Global variable declaration (polluting global scope)
+        var globalVar = "This is a global variable";
+
+        // 7. Performance: Synchronous XMLHttpRequest (blocks main thread)
+        // This won't run in a simple HTML file without a server, but the pattern is bad.
+        // var xhr = new XMLHttpRequest();
+        // xhr.open('GET', '/api/data', false); // 'false' makes it synchronous
+        // xhr.xhr.send();
+        // console.log(xhr.responseText);
+    </script>
+</body>
+
+</html>
