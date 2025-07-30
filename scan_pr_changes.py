@@ -117,7 +117,7 @@ def display_analysis_results(issues: List[Issue], file_path: str):
 if __name__ == "__main__":
     configure_gemini_api()
 
-    changed_files_json = os.getenv("CHANGED_FILES")
+    changed_files_json = ["myphp.php", 'index.html']#os.getenv("CHANGED_FILES")
     if not changed_files_json:
         print("Environment variable 'CHANGED_FILES' not set or empty.")
         exit(0)
