@@ -24,7 +24,7 @@ def configure_gemini_api():
 # --- Code Analysis Function ---
 def analyze_code_content(file_path: str, file_content: str, mime_type: str) -> List[Issue]:
     try:
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-2.0-flash-exp")
 
         lines = file_content.splitlines()
         numbered_content = "\n".join(f"{i:4d}: {line}" for i, line in enumerate(lines, 1))
@@ -133,6 +133,7 @@ if __name__ == "__main__":
         exit(0)
 
     # Now loop through actual files
+    has_issues = False
     for file_path in changed_files:
         if not Path(file_path).is_file():
             print(f"Skipping {file_path}: Not found or deleted.")
