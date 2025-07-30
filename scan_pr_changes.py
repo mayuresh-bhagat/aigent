@@ -117,13 +117,15 @@ def display_analysis_results(issues: List[Issue], file_path: str):
 if __name__ == "__main__":
     configure_gemini_api()
 
-    changed_files_json = ["myphp.php", 'index.html']#os.getenv("CHANGED_FILES")
+    changed_files_json = os.getenv("CHANGED_FILES")
     if not changed_files_json:
         print("Environment variable 'CHANGED_FILES' not set or empty.")
         exit(0)
 
     try:
-        changed_files = [f for f in json.loads(changed_files_json) if f]
+        # changed_files = [f for f in json.loads(changed_files_json) if f]
+        changed_files = [f for f in changed_files_json if f]
+
     except json.JSONDecodeError:
         print(f"Error parsing CHANGED_FILES: {changed_files_json}")
         exit(1)
